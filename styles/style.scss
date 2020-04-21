@@ -1,0 +1,29 @@
+/* vars */
+$gray: #BBBBBB;
+$light: #ffffff;
+$blue: #0080AA;
+$dark: #333333;
+
+
+/* styles */
+.sv-table-wrapper {
+  width: 100%;
+
+  .sv-table {
+    border-collapse: collapse;
+
+    th, td {
+      border: 1px solid $dark;
+      padding: 5px 10px;
+    }
+
+    th {
+      background-color: $blue;
+      color: $light;
+    }
+
+    td {
+      background-color: $light
+    }
+  }
+}

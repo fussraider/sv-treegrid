@@ -1,0 +1,29 @@
+{
+  "name": "sv-treegrid",
+  "version": "0.1.1",
+  "description": "Simple tree-grid component for Vue.js",
+  "main": "index.js",
+  "keywords": [
+    "tree",
+    "vue",
+    "treegrid",
+    "grid"
+  ],
+  "author": {
+    "name": "Constantine A.",
+    "email": "me@fussraider.ru"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fussraider/sv-treegrid.git"
+  },
+  "dependencies": {
+    "vue": "^2.6.11"
+  },
+  "devDependencies": {
+    "sass": "^1.26.3",
+    "sass-loader": "^8.0.2",
+    "vue-template-compiler": "^2.6.11"
+  }
+}
