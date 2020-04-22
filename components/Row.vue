@@ -1,5 +1,10 @@
 <template>
-    <tr v-show="isVisible">
+    <tr
+            v-show="isVisible"
+            @click="rowClick"
+            @dblclick="rowDoubleClick"
+            :class="isCurrentRow ? 'active' : ''"
+    >
         <td
                 v-for="(column, index) in state.columns"
                 :class="getColumnClassName(column)"
@@ -22,7 +27,12 @@
                         :callback="toggleRow"
                 ></sv-tree-grid-offset>
 
-                {{ rowData[column.field] }}
+                <span v-if="isEdit">
+                    <input type="text" v-model="rowData[column.field]" :placeholder="column.title">
+                </span>
+                <span v-else>
+                    {{ rowData[column.field] }}
+                </span>
             </template>
         </td>
     </tr>
@@ -73,6 +83,14 @@
                 } else {
                     return ''
                 }
+            },
+
+            rowClick() {
+                this.$store.dispatch(this.namespace + '/onRowSelect', this.rowData);
+            },
+
+            rowDoubleClick() {
+                this.$store.dispatch(this.namespace + '/onRowToggleEdit', this.rowData);
             }
         },
 
@@ -99,6 +117,14 @@
                 } else {
                     return true;
                 }
+            },
+
+            isCurrentRow() {
+                return typeof this.state.currentRow.id !== 'undefined' && this.rowData.id === this.state.currentRow.id
+            },
+
+            isEdit() {
+                return this.isCurrentRow && this.state.currentRowEdit
             }
         }
 

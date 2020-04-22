@@ -5,6 +5,10 @@ const state = () => {
         lookupTable: {},
         normalizedTable: [],
         collapsed: false,
+        currentRow: {},
+        currentRowEdit: false,
+
+        events: {}
     }
 };
 const mutations = {
@@ -14,6 +18,9 @@ const mutations = {
     setNormalizedTable: (state, payload) => state.normalizedTable = payload,
     setCollapsed: (state, payload) => state.collapsed = payload,
     setCollapsedInLookupTableById: (state, payload) => state.lookupTable[payload.id].collapsed = payload.value,
+    setCurrentRow: (state, payload) => state.currentRow = payload,
+    setCurrentRowEdit: (state, payload) => state.currentRowEdit = payload,
+    setEventClosure: (state, payload) => state.events[payload.name] = payload.function,
 };
 
 const actions = {
@@ -68,6 +75,25 @@ const actions = {
         return commit('setCollapsedInLookupTableById', payload);
     },
 
+    setCurrentRow({commit, state}, row) {
+        if(typeof state.currentRow.id === 'undefined' || row.id !== state.currentRow.id) {
+            commit('setCurrentRowEdit', false);
+        }
+        commit('setCurrentRow', row);
+    },
+
+    setCurrentRowEdit({commit, dispatch, state}, value) {
+        if(value) {
+            dispatch('onRowEditBefore', state.currentRow)
+                .then(() => {
+                    commit('setCurrentRowEdit', value);
+                    dispatch('onRowEditAfter', state.currentRow)
+                })
+        } else {
+            commit('setCurrentRowEdit', value);
+        }
+    },
+
     /**
      * @example: payload = {id: 1, value: false}
      */
@@ -87,6 +113,55 @@ const actions = {
         }
     },
 
+
+    closureAction({state}, payload) {
+        if (typeof state.events[payload.eventName] === 'function') {
+            state.events[payload.eventName](payload.data);
+        }
+    },
+
+    /***********************
+     *  row event actions  *
+     **********************/
+
+    onRowSelect: ({state, dispatch}, row) => {
+        dispatch('setCurrentRow', row)
+            .then(() => {
+                dispatch('closureAction', {
+                    eventName: 'onRowSelect',
+                    data: row
+                })
+            })
+    },
+
+    onRowToggleEdit: ({state, dispatch, commit}, row) => {
+        dispatch('setCurrentRowEdit', !state.currentRowEdit);
+        dispatch('closureAction', {
+            eventName: 'onRowToggleEdit',
+            data: row
+        })
+    },
+
+    onRowEditBefore: ({dispatch}, row) => {
+        dispatch('closureAction', {
+            eventName: 'onRowEditBefore',
+            data: row
+        })
+    },
+
+    onRowEditAfter: ({dispatch}, row) => {
+        dispatch('closureAction', {
+            eventName: 'onRowEditAfter',
+            data: row
+        })
+    },
+
+    onRowSave: ({dispatch}, row) => {
+        dispatch('closureAction', {
+            eventName: 'onRowSave',
+            data: row
+        })
+    }
 };
 
 export default {

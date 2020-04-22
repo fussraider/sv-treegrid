@@ -34,6 +34,12 @@
                 default: []
             },
 
+            config: {
+                type: Object,
+                required: false,
+                default: {}
+            },
+
             collapsed: {
                 type: Boolean,
                 required: false,
@@ -60,12 +66,24 @@
             this.$store.commit(this.namespace + '/setKeyField', columnsWrapper.keyField);
             this.$store.commit(this.namespace + '/setColumns', columnsWrapper.$children);
             this.$store.commit(this.namespace + '/setCollapsed', this.collapsed);
+            this.loadConfig();
             this.refreshTable();
         },
 
         methods: {
             refreshTable() {
                 this.$store.dispatch(this.namespace + '/handleItemsList', this.items, this.collapsed);
+            },
+
+            loadConfig() {
+                if(typeof this.config.events !== 'undefined'){
+                    Object.keys(this.config.events).forEach(eventName => {
+                        this.$store.commit(this.namespace + '/setEventClosure', {
+                            name: eventName,
+                            function: this.config.events[eventName]
+                        });
+                    })
+                }
             }
         },
 

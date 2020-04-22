@@ -1,5 +1,6 @@
 /* colors */
 $gray: #BBBBBB;
+$light-gray: #eeeeee;
 $light: #ffffff;
 $blue: #0080AA;
 $dark: #333333;
@@ -13,18 +14,40 @@ $black: #000000;
   .sv-table {
     border-collapse: collapse;
 
-    th, td {
-      border: 1px solid $dark;
-      padding: 5px 10px;
-    }
+    tr {
 
-    th {
-      background-color: $blue;
-      color: $light;
-    }
+      &.active {
+        td {
+          background-color: $gray
+        }
 
-    td {
-      background-color: $light;
+        &:hover {
+          td {
+            background-color: $gray
+          }
+        }
+      }
+
+      &:hover {
+        td {
+          background-color: $light-gray;
+        }
+      }
+
+      th, td {
+        border: 1px solid $dark;
+        padding: 5px 10px;
+      }
+
+      th {
+        background-color: $blue;
+        color: $light;
+      }
+
+      td {
+        background-color: $light;
+      }
+
     }
   }
 }
