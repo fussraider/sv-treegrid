@@ -1,13 +1,14 @@
 {
   "name": "sv-treegrid",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Simple tree-grid component for Vue.js",
   "main": "index.js",
   "keywords": [
     "tree",
     "vue",
     "treegrid",
-    "grid"
+    "grid",
+    "table"
   ],
   "author": {
     "name": "Constantine A.",

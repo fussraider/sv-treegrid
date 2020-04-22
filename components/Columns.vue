@@ -6,9 +6,7 @@
 </template>
 
 <script>
-    import Arrow from "./Offset";
     export default {
-        components: {Arrow},
         name: 'SvTreeGridColumns',
         props: {
             keyField: {
