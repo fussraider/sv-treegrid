@@ -1,8 +1,9 @@
-/* vars */
+/* colors */
 $gray: #BBBBBB;
 $light: #ffffff;
 $blue: #0080AA;
 $dark: #333333;
+$black: #000000;
 
 
 /* styles */
@@ -23,7 +24,50 @@ $dark: #333333;
     }
 
     td {
-      background-color: $light
+      background-color: $light;
     }
   }
+}
+
+.sv-table-arrow-wrapper {
+  display: inline-block;
+
+  .sv-table-arrow-button {
+    padding: 0;
+    background: transparent;
+    border: none;
+    -webkit-appearance: none;
+    color: $dark;
+    opacity: .6;
+    cursor: pointer;
+
+    &:hover {
+      color: $black;
+      opacity: 1
+    }
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  .sv-table-arrow-icon {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    box-sizing: border-box;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center center;
+
+    &__down {
+      background-image: url(../images/arrow_down.svg);
+    }
+
+    &__right {
+      background-image: url(../images/arrow_right.svg);
+    }
+  }
+
+
 }

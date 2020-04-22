@@ -2,56 +2,88 @@
     <div class="sv-table-wrapper">
         <table class="sv-table">
             <thead>
-                <slot></slot>
+            <slot></slot>
             </thead>
-            <sv-tree-grid-rows
-                :columns="columns"
-                :rows-data="tree"
-            ></sv-tree-grid-rows>
+
+            <tbody>
+            <sv-tree-grid-row
+                    v-for="(row, index) in state.normalizedTable"
+                    :index="index"
+                    :row-data="row"
+                    :state="state"
+                    :namespace="namespace"
+                    :key="'row-' + index"
+            >
+            </sv-tree-grid-row>
+            </tbody>
         </table>
     </div>
 </template>
 
 <script>
-    import SvTreeGridRows from "./Rows";
+    import store from '../store';
+    import SvTreeGridRow from "./Row";
+
     export default {
         name: 'SvTreeGrid',
-        components: {SvTreeGridRows},
+        components: {SvTreeGridRow},
         props: {
             items: {
                 type: Array,
                 required: false,
                 default: []
+            },
+
+            collapsed: {
+                type: Boolean,
+                required: false,
+                default: false
+            },
+
+            namespace: {
+                type: String,
+                required: false,
+                default: 'sv-treegrid'
             }
         },
-        data() {
-            return {
-                columns: [],
-            }
+
+        created() {
+            this.$store.registerModule(this.namespace, store)
+        },
+
+        beforeDestroy() {
+            this.$store.unregisterModule(this.namespace)
         },
 
         mounted() {
-            this.columns = this.$children.find(comp => comp.$options.name === 'SvTreeGridColumns').$children
+            let columnsWrapper = this.$children.find(comp => comp.$options.name === 'SvTreeGridColumns');
+            this.$store.commit(this.namespace + '/setKeyField', columnsWrapper.keyField);
+            this.$store.commit(this.namespace + '/setColumns', columnsWrapper.$children);
+            this.$store.commit(this.namespace + '/setCollapsed', this.collapsed);
+            this.refreshTable();
+        },
+
+        methods: {
+            refreshTable() {
+                this.$store.dispatch(this.namespace + '/handleItemsList', this.items, this.collapsed);
+            }
         },
 
         computed: {
-            tree() {
-                if (this.items.length === 0) {
-                    return []
-                } else {
-                    const map = new Map(this.items.map(item => [item.id, item]));
+            state() {
+                return this.$store.state[this.namespace];
+            },
+        },
 
-                    for (let item of map.values()) {
-                        if (!map.has(item.parent_id)) {
-                            continue;
-                        }
-
-                        const parent = map.get(item.parent_id);
-                        parent.children = [...parent.children || [], item];
+        watch: {
+            items: {
+                handler() {
+                    if (this.state) {
+                        this.refreshTable();
                     }
-
-                    return [...map.values()].filter(item => !item.parent_id);
-                }
+                },
+                deep: true,
+                immediate: true,
             }
         }
     }

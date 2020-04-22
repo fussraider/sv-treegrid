@@ -12,7 +12,7 @@
             },
             field: {
                 required: true
-            }
+            },
         }
     }
 </script>
